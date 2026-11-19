@@ -1,0 +1,42 @@
+{
+  "name": "nviasrt",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev -p 3000",
+    "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start -p 3000",
+    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "ci": "npm run payload migrate && npm run build",
+    "generate:types": "npm run payload generate:types",
+    "generate:importmap": "npm run payload generate:importmap",
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/seed.ts"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "^3.94.0",
+    "@payloadcms/next": "^3.94.0",
+    "@payloadcms/richtext-lexical": "^3.94.0",
+    "@payloadcms/storage-vercel-blob": "^3.94.0",
+    "@payloadcms/ui": "^3.94.0",
+    "cross-env": "^10.1.0",
+    "graphql": "^16.15.0",
+    "gsap": "3.12.5",
+    "lenis": "1.1.13",
+    "next": "^16.4.6",
+    "payload": "^3.94.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "5.9"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}
