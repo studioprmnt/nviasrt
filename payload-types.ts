@@ -103,9 +103,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     home: Home;
+    seo: Seo;
   };
   globalsSelect: {
     home: HomeSelect<false> | HomeSelect<true>;
+    seo: SeoSelect<false> | SeoSelect<true>;
   };
   locale: null;
   widgets: {
@@ -182,6 +184,24 @@ export interface Post {
         id?: string | null;
       }[]
     | null;
+  meta?: {
+    /**
+     * Shown as the headline in Google and when shared. Leave empty to use the page title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Shown under the headline in Google and when shared. Leave empty to use the excerpt. Around 100–150 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared (WhatsApp, Instagram, Facebook, X). Leave empty to use the main photo. Landscape works best.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
   /**
    * Part of the URL. Leave empty to create it from the title.
    */
@@ -253,6 +273,24 @@ export interface ShopCollection {
   name: string;
   blurb: string;
   image: number | Media;
+  meta?: {
+    /**
+     * Shown as the headline in Google and when shared. Leave empty to use the page title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Shown under the headline in Google and when shared. Leave empty to use the excerpt. Around 100–150 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared (WhatsApp, Instagram, Facebook, X). Leave empty to use the main photo. Landscape works best.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
   /**
    * Part of the URL. Leave empty to create it from the title.
    */
@@ -280,6 +318,24 @@ export interface Category {
    * Intro on the category page. Leave a blank line between paragraphs.
    */
   intro?: string | null;
+  meta?: {
+    /**
+     * Shown as the headline in Google and when shared. Leave empty to use the page title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Shown under the headline in Google and when shared. Leave empty to use the excerpt. Around 100–150 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared (WhatsApp, Instagram, Facebook, X). Leave empty to use the main photo. Landscape works best.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
   /**
    * Part of the URL. Leave empty to create it from the title.
    */
@@ -363,6 +419,24 @@ export interface Guide {
         id?: string | null;
       }[]
     | null;
+  meta?: {
+    /**
+     * Shown as the headline in Google and when shared. Leave empty to use the page title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Shown under the headline in Google and when shared. Leave empty to use the excerpt. Around 100–150 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared (WhatsApp, Instagram, Facebook, X). Leave empty to use the main photo. Landscape works best.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
   /**
    * Part of the URL. Leave empty to create it from the title.
    */
@@ -557,6 +631,14 @@ export interface PostsSelect<T extends boolean = true> {
         topPick?: T;
         id?: T;
       };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   slug?: T;
   category?: T;
   publishedAt?: T;
@@ -575,6 +657,14 @@ export interface CategoriesSelect<T extends boolean = true> {
   name?: T;
   blurb?: T;
   intro?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   slug?: T;
   tint?: T;
   updatedAt?: T;
@@ -628,6 +718,14 @@ export interface GuidesSelect<T extends boolean = true> {
         answer?: T;
         id?: T;
       };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   slug?: T;
   type?: T;
   featured?: T;
@@ -662,6 +760,14 @@ export interface ShopCollectionsSelect<T extends boolean = true> {
   name?: T;
   blurb?: T;
   image?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   slug?: T;
   tint?: T;
   updatedAt?: T;
@@ -800,6 +906,227 @@ export interface Home {
   createdAt?: string | null;
 }
 /**
+ * Search and sharing settings for the whole site and its fixed pages. Chronicles, Guides, categories and shop collections each have their own SEO tab.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo".
+ */
+export interface Seo {
+  id: number;
+  /**
+   * Added after every page title, e.g. “Guides · nviasrt”, and shown as the site name when shared.
+   */
+  siteName?: string | null;
+  /**
+   * Used for any page without its own description.
+   */
+  siteDescription?: string | null;
+  /**
+   * Used when a page has no photo of its own. Landscape, at least 1200 × 630.
+   */
+  siteImage?: (number | null) | Media;
+  home?: {
+    /**
+     * Leave empty to use “nviasrt — slow living, travel and the things I love”.
+     */
+    title?: string | null;
+    /**
+     * Leave empty to use: “Ovi’s journal of slow living, travel and honest picks.”
+     */
+    description?: string | null;
+    /**
+     * Leave empty to use the site share image.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
+  chronicles?: {
+    /**
+     * Leave empty to use “Chronicles”.
+     */
+    title?: string | null;
+    /**
+     * Leave empty to use: “Ovi’s stories on slow living, travel and home.”
+     */
+    description?: string | null;
+    /**
+     * Leave empty to use the site share image.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
+  guides?: {
+    /**
+     * Leave empty to use “Guides”.
+     */
+    title?: string | null;
+    /**
+     * Leave empty to use: “Packing lists, round-ups and how-tos for slower travel and living.”
+     */
+    description?: string | null;
+    /**
+     * Leave empty to use the site share image.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
+  shop?: {
+    /**
+     * Leave empty to use “Shop My Picks”.
+     */
+    title?: string | null;
+    /**
+     * Leave empty to use: “The things Ovi actually uses and loves, sorted into collections.”
+     */
+    description?: string | null;
+    /**
+     * Leave empty to use the site share image.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
+  about?: {
+    /**
+     * Leave empty to use “About Ovi”.
+     */
+    title?: string | null;
+    /**
+     * Leave empty to use: “Who is behind nviasrt, and why slow living.”
+     */
+    description?: string | null;
+    /**
+     * Leave empty to use the site share image.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
+  workWithMe?: {
+    /**
+     * Leave empty to use “Work With Me”.
+     */
+    title?: string | null;
+    /**
+     * Leave empty to use: “Brand partnerships and collaborations with Ovi.”
+     */
+    description?: string | null;
+    /**
+     * Leave empty to use the site share image.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
+  contact?: {
+    /**
+     * Leave empty to use “Contact”.
+     */
+    title?: string | null;
+    /**
+     * Leave empty to use: “Get in touch with Ovi.”
+     */
+    description?: string | null;
+    /**
+     * Leave empty to use the site share image.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
+  search?: {
+    /**
+     * Leave empty to use “Search”.
+     */
+    title?: string | null;
+    /**
+     * Leave empty to use the site description.
+     */
+    description?: string | null;
+    /**
+     * Leave empty to use the site share image.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
+  privacy?: {
+    /**
+     * Leave empty to use “Privacy Policy”.
+     */
+    title?: string | null;
+    /**
+     * Leave empty to use the site description.
+     */
+    description?: string | null;
+    /**
+     * Leave empty to use the site share image.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
+  terms?: {
+    /**
+     * Leave empty to use “Terms”.
+     */
+    title?: string | null;
+    /**
+     * Leave empty to use the site description.
+     */
+    description?: string | null;
+    /**
+     * Leave empty to use the site share image.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
+  affiliateDisclosure?: {
+    /**
+     * Leave empty to use “Affiliate Disclosure”.
+     */
+    title?: string | null;
+    /**
+     * Leave empty to use the site description.
+     */
+    description?: string | null;
+    /**
+     * Leave empty to use the site share image.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Adds "noindex" and leaves the page out of the sitemap. The page stays online.
+     */
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home_select".
  */
@@ -813,6 +1140,106 @@ export interface HomeSelect<T extends boolean = true> {
         id?: T;
       };
   featuredCollection?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo_select".
+ */
+export interface SeoSelect<T extends boolean = true> {
+  siteName?: T;
+  siteDescription?: T;
+  siteImage?: T;
+  home?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  chronicles?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  guides?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  shop?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  about?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  workWithMe?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  contact?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  search?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  privacy?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  terms?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  affiliateDisclosure?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

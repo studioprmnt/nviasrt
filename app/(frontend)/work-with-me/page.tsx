@@ -1,9 +1,10 @@
+import { staticMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import { JournalRow } from '@/components/ui';
 import { ContactForm } from '@/components/client';
 import Split from '@/components/Split';
 
-export const metadata = { title: 'Work With Me' };
+export const generateMetadata = () => staticMetadata('workWithMe');
 
 const offers = [
   { tint: 'cream', label: '01  ·  Consulting', title: 'SEO & GEO', desc: 'For brands and small businesses that want to be found on Google and quoted by AI search, without chasing every trend.', items: ['Technical SEO and site-structure audits', 'Content strategy for Google and AI search', 'Schema, internal links and page speed', 'Monthly reporting in plain language'], cta: 'Book a call' },

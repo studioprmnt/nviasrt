@@ -1,5 +1,6 @@
+import { staticMetadata } from '@/lib/seo';
 import Legal from '@/components/Legal';
-export const metadata = { title: 'Terms' };
+export const generateMetadata = () => staticMetadata('terms');
 export default function Page() {
   return <Legal title="Terms" updated="11 Nov 2026" sections={[
     ['Content', 'Words and photos on this site are mine unless stated. Please ask before reusing them.'],

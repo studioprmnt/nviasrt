@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getContent } from '@/lib/data';
+import { seoMetadata } from '@/lib/seo';
 import { GuideCard, Faq } from '@/components/ui';
 import { Newsletter } from '@/components/client';
 import Article from '@/components/Article';
@@ -8,7 +9,8 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateStaticParams() { return (await getContent()).guides.map(g => ({ slug: g.slug })); }
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params; const g = (await getContent()).guides.find(x => x.slug === slug);
-  return { title: g?.title ?? 'Guide', description: g?.excerpt };
+  if (!g) return { title: 'Guide' };
+  return seoMetadata(g.seo, { title: g.title, description: g.excerpt, image: g.image, path: `/guides/${g.slug}`, article: { modifiedTime: g.modifiedAt, section: 'Guides' } });
 }
 
 export default async function GuidePage({ params }: Props) {

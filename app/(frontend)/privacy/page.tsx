@@ -1,5 +1,6 @@
+import { staticMetadata } from '@/lib/seo';
 import Legal from '@/components/Legal';
-export const metadata = { title: 'Privacy Policy' };
+export const generateMetadata = () => staticMetadata('privacy');
 export default function Page() {
   return <Legal title="Privacy Policy" updated="11 Nov 2026" sections={[
     ['What I collect', 'Anonymous analytics (Google Analytics 4) after you accept cookies, and your email if you join the newsletter.'],

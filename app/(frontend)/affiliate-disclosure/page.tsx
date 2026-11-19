@@ -1,5 +1,6 @@
+import { staticMetadata } from '@/lib/seo';
 import Legal from '@/components/Legal';
-export const metadata = { title: 'Affiliate Disclosure' };
+export const generateMetadata = () => staticMetadata('affiliateDisclosure');
 export default function Page() {
   return <Legal title="Affiliate Disclosure" updated="11 Nov 2026" sections={[
     ['In short', 'Some links on this site are affiliate links. If you click one and buy something, I may earn a small commission. It costs you nothing extra.'],

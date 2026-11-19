@@ -1,9 +1,9 @@
-import type { Metadata } from 'next';
+import { staticMetadata } from '@/lib/seo';
 import { getContent } from '@/lib/data';
 import { PostCard, Pagination } from '@/components/ui';
 import { Newsletter } from '@/components/client';
 
-export const metadata: Metadata = { title: 'Chronicles' };
+export const generateMetadata = () => staticMetadata('chronicles');
 
 export default async function Chronicles() {
   const { posts } = await getContent();

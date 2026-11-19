@@ -1,8 +1,9 @@
+import { staticMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import { ContactForm } from '@/components/client';
 import Split from '@/components/Split';
 
-export const metadata = { title: 'Contact' };
+export const generateMetadata = () => staticMetadata('contact');
 
 export default function Contact() {
   return (

@@ -1,7 +1,8 @@
+import { staticMetadata } from '@/lib/seo';
 import { getContent } from '@/lib/data';
 import { JournalRow, ProductCard, SearchForm } from '@/components/ui';
 
-export const metadata = { title: 'Search' };
+export const generateMetadata = () => staticMetadata('search');
 
 export default async function Search(props: { searchParams: Promise<{ q?: string }> }) {
   const searchParams = await props.searchParams;

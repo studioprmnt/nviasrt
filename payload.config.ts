@@ -14,6 +14,9 @@ import { ShopCollections } from './cms/collections/ShopCollections';
 import { Products } from './cms/collections/Products';
 import { Messages, Subscribers } from './cms/collections/Inbox';
 import { Home } from './cms/globals/Home';
+import { SEO } from './cms/globals/SEO';
+import { seoPlugin } from '@payloadcms/plugin-seo';
+import { seoGenerators } from './cms/seo';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -25,7 +28,7 @@ export default buildConfig({
     meta: { titleSuffix: ' · nviasrt CMS' },
   },
   collections: [Posts, Categories, Guides, Products, ShopCollections, Media, Subscribers, Messages, Users],
-  globals: [Home],
+  globals: [Home, SEO],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
@@ -35,6 +38,8 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
+    // Only provides the SEO field UI and its Auto-generate endpoints; the fields themselves are added in cms/seo.ts
+    seoPlugin({ uploadsCollection: 'media', ...seoGenerators }),
     vercelBlobStorage({
       enabled: !!process.env.BLOB_READ_WRITE_TOKEN,
       collections: { media: { disablePayloadAccessControl: true } },

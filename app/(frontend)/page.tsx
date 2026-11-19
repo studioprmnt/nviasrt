@@ -1,3 +1,4 @@
+import { staticMetadata } from '@/lib/seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getContent } from '@/lib/data';
@@ -5,6 +6,8 @@ import { PostCard, ProductCard, SectionHead } from '@/components/ui';
 import { Newsletter, Signature } from '@/components/client';
 import Split from '@/components/Split';
 import HeroMoments from '@/components/HeroMoments';
+
+export const generateMetadata = () => staticMetadata('home');
 
 export default async function Home() {
   const { posts, products, home } = await getContent();

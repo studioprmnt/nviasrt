@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, DM_Sans, Mrs_Saint_Delafield } from 'next/font/google';
 import Header from '@/components/Header';
 import { getContent } from '@/lib/data';
+import { siteURL } from '@/cms/seo';
+import { STATIC_PAGES } from '@/cms/globals/SEO';
 import Footer from '@/components/Footer';
 import { MotionInit, SmoothScroll } from '@/components/motion';
 import Cursor from '@/components/Cursor';
@@ -12,10 +14,20 @@ const serif = Cormorant_Garamond({ subsets: ['latin', 'latin-ext'], weight: ['40
 const sans = DM_Sans({ subsets: ['latin', 'latin-ext'], weight: ['400', '500'], variable: '--font-sans', display: 'swap' });
 const script = Mrs_Saint_Delafield({ subsets: ['latin'], weight: '400', variable: '--font-script', display: 'swap' });
 
-export const metadata: Metadata = {
-  title: { default: 'nviasrt — slow living, travel and the things I love', template: '%s · nviasrt' },
-  description: 'Ovi’s journal of slow living, travel and honest picks.',
-};
+// Site-wide defaults from the SEO global; each page adds its own (lib/seo.ts).
+export async function generateMetadata(): Promise<Metadata> {
+  const { site } = await getContent();
+  const preview = !!process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production';
+  return {
+    metadataBase: new URL(siteURL()),
+    title: { default: site.pages.home?.title || STATIC_PAGES[0].title, template: `%s · ${site.name}` },
+    description: site.description,
+    applicationName: site.name,
+    openGraph: { siteName: site.name, locale: 'en_GB', type: 'website', images: site.image ? [{ url: site.image }] : undefined },
+    // Vercel preview deployments stay out of search results.
+    ...(preview ? { robots: { index: false, follow: false } } : {}),
+  };
+}
 export const viewport: Viewport = { themeColor: '#FBF8F3' };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

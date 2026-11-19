@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { slugField, tintField } from '../fields';
 import { revalidateHooks } from '../revalidate';
+import { withSeoTab } from '../seo';
 export const ShopCollections: CollectionConfig = {
   slug: 'shop-collections',
   labels: { singular: 'Shop collection', plural: 'Shop collections' },
@@ -8,10 +9,10 @@ export const ShopCollections: CollectionConfig = {
   orderable: true,
   access: { read: () => true },
   hooks: revalidateHooks,
-  fields: [
+  fields: withSeoTab([
     { name: 'name', type: 'text', required: true },
     { name: 'blurb', type: 'text', required: true },
     { name: 'image', type: 'upload', relationTo: 'media', required: true },
     slugField('name'), tintField,
-  ],
+  ]),
 };

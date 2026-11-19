@@ -7,27 +7,32 @@ import { getPayload } from 'payload';
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical';
 import type * as P from '@/payload-types';
 import { slugify } from '@/cms/fields';
+import { STATIC_PAGES, type StaticPageKey } from '@/cms/globals/SEO';
 
 export type Tint = 'sand' | 'clay' | 'ocean' | 'cream' | 'paper';
 
-export type Category = { slug: string; name: string; tint: Tint; blurb: string; intro: string[] };
-export type Collection = { slug: string; name: string; tint: Tint; image: string; blurb: string; count: number };
+/** SEO overrides from the CMS. Empty values fall back to the entry's own title, excerpt and photo (see lib/seo.ts). */
+export type Seo = { title?: string; description?: string; image?: string; noIndex?: boolean };
+export type Category = { slug: string; name: string; tint: Tint; blurb: string; intro: string[]; seo: Seo; modifiedAt: string };
+export type Collection = { slug: string; name: string; tint: Tint; image: string; blurb: string; count: number; seo: Seo; modifiedAt: string };
 export type Product = { slug: string; name: string; note: string; image: string; store: string; url: string; collections: string[] };
 export type Section = { id: string; heading: string; body?: SerializedEditorState; image?: { src: string; caption: string }; products?: Product[]; topPick?: Product };
 export type Post = {
   slug: string; title: string; category: string; categoryName: string; date: string; updated?: string; readMin: number;
   image: string; caption: string; excerpt: string; takeaways?: string[]; sections: Section[];
+  seo: Seo; publishedAt: string; modifiedAt: string;
 };
 export type Guide = {
   slug: string; title: string; type: 'Packing list' | 'Round-up' | 'How-to'; updated: string; readMin: number;
   image: string; caption: string; excerpt: string; takeaways: string[]; topPick?: Product; products?: Product[];
   comparison?: { cols: string[]; rows: string[][] }; checklist?: string[]; faq?: { q: string; a: string }[];
-  sections: Section[]; featured?: boolean;
+  sections: Section[]; featured?: boolean; seo: Seo; modifiedAt: string;
 };
 export type Moment = { src: string; alt: string; place: string; href: string; pos: string };
 export type Content = {
   categories: Category[]; collections: Collection[]; products: Product[]; posts: Post[]; guides: Guide[];
   home: { moments: Moment[]; featured?: Collection };
+  site: { name: string; description: string; image: string; pages: Partial<Record<StaticPageKey, Seo>> };
 };
 
 const FALLBACK_IMAGE = '/photos/hero.jpg';
@@ -35,19 +40,24 @@ const isObj = <T,>(v: number | T | null | undefined): v is T => !!v && typeof v 
 const media = (m: number | P.Media | null | undefined) => (isObj(m) && m.url ? m.url : FALLBACK_IMAGE);
 const alt = (m: number | P.Media | null | undefined) => (isObj(m) ? m.alt : '');
 const fmt = (d?: string | null) => (d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Makassar' }) : '');
+const seo = (m?: { title?: string | null; description?: string | null; image?: number | P.Media | null; noIndex?: boolean | null } | null): Seo => ({
+  title: m?.title?.trim() || undefined, description: m?.description?.trim() || undefined,
+  image: isObj(m?.image) && m.image.url ? m.image.url : undefined, noIndex: m?.noIndex ?? undefined,
+});
 const cells = (s?: string | null) => (s ?? '').split('|').map(x => x.trim());
 
 async function load(): Promise<Content> {
   const payload = await getPayload({ config });
   const q = { limit: 1000, depth: 2, pagination: false, overrideAccess: false } as const;
   const published = { _status: { equals: 'published' } } as const;
-  const [cats, cols, prods, posts, guides, home] = await Promise.all([
+  const [cats, cols, prods, posts, guides, home, site] = await Promise.all([
     payload.find({ ...q, collection: 'categories', sort: '_order' }),
     payload.find({ ...q, collection: 'shop-collections', sort: '_order' }),
     payload.find({ ...q, collection: 'products', sort: '_order' }),
     payload.find({ ...q, collection: 'posts', where: published, sort: '-publishedAt' }),
     payload.find({ ...q, collection: 'guides', where: published, sort: '-lastUpdated' }),
     payload.findGlobal({ slug: 'home', depth: 2, overrideAccess: false }),
+    payload.findGlobal({ slug: 'seo', depth: 1, overrideAccess: false }),
   ]);
 
   const product = (p: P.Product): Product => ({
@@ -67,10 +77,12 @@ async function load(): Promise<Content> {
   const categories: Category[] = cats.docs.map(c => ({
     slug: c.slug, name: c.name, tint: c.tint as Tint, blurb: c.blurb,
     intro: (c.intro ?? '').split(/\n\s*\n/).map(x => x.trim()).filter(Boolean),
+    seo: seo(c.meta), modifiedAt: c.updatedAt,
   }));
   const collections: Collection[] = cols.docs.map(c => ({
     slug: c.slug, name: c.name, tint: c.tint as Tint, image: media(c.image), blurb: c.blurb,
     count: products.filter(p => p.collections.includes(c.slug)).length,
+    seo: seo(c.meta), modifiedAt: c.updatedAt,
   }));
 
   return {
@@ -81,6 +93,7 @@ async function load(): Promise<Content> {
         slug: p.slug, title: p.title, category: cat?.slug ?? '', categoryName: cat?.name ?? '', date: fmt(p.publishedAt),
         updated: p.updated ? fmt(p.updated) : undefined, readMin: p.readMin, image: media(p.image), caption: p.caption,
         excerpt: p.excerpt, takeaways: p.takeaways?.length ? p.takeaways.map(t => t.text) : undefined, sections: sections(p.sections),
+        seo: seo(p.meta), publishedAt: p.publishedAt, modifiedAt: p.updatedAt,
       };
     }),
     guides: guides.docs.map(g => ({
@@ -90,7 +103,7 @@ async function load(): Promise<Content> {
       comparison: g.comparisonColumns && g.comparisonRows?.length ? { cols: cells(g.comparisonColumns), rows: g.comparisonRows.map(r => cells(r.cells)) } : undefined,
       checklist: g.checklist?.length ? g.checklist.map(c => c.item) : undefined,
       faq: g.faq?.length ? g.faq.map(f => ({ q: f.question, a: f.answer })) : undefined,
-      sections: sections(g.sections),
+      sections: sections(g.sections), seo: seo(g.meta), modifiedAt: g.updatedAt,
     })),
     home: {
       moments: (home.moments ?? []).map(m => ({
@@ -99,6 +112,12 @@ async function load(): Promise<Content> {
         href: isObj(m.post) && m.post._status === 'published' ? `/chronicles/${m.post.slug}` : '/chronicles',
       })),
       featured: collections.find(c => isObj(home.featuredCollection) && c.slug === home.featuredCollection.slug) ?? collections[0],
+    },
+    site: {
+      name: site.siteName?.trim() || 'nviasrt',
+      description: site.siteDescription?.trim() || STATIC_PAGES[0].description,
+      image: isObj(site.siteImage) && site.siteImage.url ? site.siteImage.url : FALLBACK_IMAGE,
+      pages: Object.fromEntries(STATIC_PAGES.map(p => [p.key, seo(site[p.key])])),
     },
   };
 }

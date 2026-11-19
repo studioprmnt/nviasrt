@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { sectionsField, slugField, takeawaysField } from '../fields';
 import { revalidateHooks } from '../revalidate';
+import { withSeoTab } from '../seo';
 export const Guides: CollectionConfig = {
   slug: 'guides',
   admin: { useAsTitle: 'title', group: 'Guides', defaultColumns: ['title', 'type', 'lastUpdated', '_status'] },
@@ -8,7 +9,7 @@ export const Guides: CollectionConfig = {
   versions: { drafts: true, maxPerDoc: 25 },
   access: { read: ({ req }) => (req.user ? true : { _status: { equals: 'published' } }) },
   hooks: revalidateHooks,
-  fields: [
+  fields: withSeoTab([
     { name: 'title', type: 'text', required: true },
     { name: 'excerpt', type: 'textarea', required: true },
     { type: 'row', fields: [
@@ -36,5 +37,5 @@ export const Guides: CollectionConfig = {
     { name: 'featured', type: 'checkbox', admin: { position: 'sidebar', description: 'Shown large at the top of Guides.' } },
     { name: 'lastUpdated', type: 'date', required: true, defaultValue: () => new Date().toISOString(), admin: { position: 'sidebar', date: { pickerAppearance: 'dayOnly', displayFormat: 'd MMM yyyy' } } },
     { name: 'readMin', type: 'number', label: 'Minutes to read', required: true, defaultValue: 5, min: 1, admin: { position: 'sidebar' } },
-  ],
+  ]),
 };

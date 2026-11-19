@@ -1,3 +1,4 @@
+import { staticMetadata } from '@/lib/seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getContent } from '@/lib/data';
@@ -5,7 +6,7 @@ import { GuideCard, Pagination, SearchForm } from '@/components/ui';
 import { Newsletter } from '@/components/client';
 import Split from '@/components/Split';
 
-export const metadata = { title: 'Guides' };
+export const generateMetadata = () => staticMetadata('guides');
 
 export default async function Guides() {
   const { guides } = await getContent();

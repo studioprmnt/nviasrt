@@ -1,9 +1,10 @@
+import { staticMetadata } from '@/lib/seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Signature } from '@/components/client';
 import Split from '@/components/Split';
 
-export const metadata = { title: 'About Ovi' };
+export const generateMetadata = () => staticMetadata('about');
 
 export default function About() {
   return (

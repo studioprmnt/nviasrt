@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getContent } from '@/lib/data';
+import { seoMetadata } from '@/lib/seo';
 import { PostCard, Pagination } from '@/components/ui';
 import { Newsletter } from '@/components/client';
 import Article from '@/components/Article';
@@ -15,7 +16,12 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params; const { categories, posts } = await getContent();
   const cat = categories.find(c => c.slug === slug); const post = posts.find(p => p.slug === slug);
-  return { title: cat?.name ?? post?.title ?? 'Chronicles', description: post?.excerpt };
+  if (cat) return seoMetadata(cat.seo, { title: cat.name, description: cat.intro[0] ?? cat.blurb, path: `/chronicles/${cat.slug}` });
+  if (post) return seoMetadata(post.seo, {
+    title: post.title, description: post.excerpt, image: post.image, path: `/chronicles/${post.slug}`,
+    article: { publishedTime: post.publishedAt, modifiedTime: post.modifiedAt, section: post.categoryName },
+  });
+  return { title: 'Chronicles' };
 }
 
 export default async function ChronicleSlug({ params }: Props) {

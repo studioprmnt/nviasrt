@@ -40,6 +40,14 @@ Local development uses the same Neon database and Blob store as production, so e
 
 Publishing anything clears the site cache, so changes show up on the next page load.
 
+## SEO
+
+- **Chronicles, Guides, Chronicles categories and Shop collections** each have an **SEO** tab: meta title, description, share image, and "Hide from search engines". Empty fields fall back to the entry's title, excerpt (or blurb) and main photo. The Auto-generate buttons copy those in.
+- **Fixed pages** (Home, About, Contact, legal pages and so on) are set under **Settings → SEO → Pages**. The **Site defaults** tab holds the site name (added after page titles), the fallback description and the fallback share image.
+- A title typed into an SEO field is used exactly as written, with no " · nviasrt" added after it.
+- `/sitemap.xml` and `/robots.txt` are generated from the CMS. Hidden entries are left out of the sitemap. Vercel preview deployments are never indexed.
+- Code: `cms/seo.ts` holds the fields, `cms/globals/SEO.ts` the fixed-page list, and `lib/seo.ts` builds the page metadata.
+
 ## Changing the content model
 
 1. Edit a collection in `cms/`.
