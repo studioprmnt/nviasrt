@@ -26,7 +26,16 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     importMap: { baseDir: dirname },
-    meta: { titleSuffix: ' · nviasrt CMS' },
+    meta: {
+      titleSuffix: ' · nviasrt CMS',
+      icons: [{ rel: 'icon', type: 'image/svg+xml', url: '/brand/icon.svg' }],
+    },
+    components: {
+      graphics: {
+        Logo: '/cms/admin/Branding#AdminLogo',
+        Icon: '/cms/admin/Branding#AdminIcon',
+      },
+    },
   },
   collections: [Posts, Categories, Guides, Products, ShopCollections, Media, Subscribers, Messages, Users],
   globals: [Home, SEO],

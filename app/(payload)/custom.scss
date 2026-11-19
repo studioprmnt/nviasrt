@@ -1,0 +1,90 @@
+/* nviasrt admin skin: the site's tokens (app/(frontend)/globals.css) mapped onto Payload's theme variables.
+   Payload derives every surface, border and text colour from --color-base-*, and its dark mode reuses the
+   same ramp reversed, so both modes come out warm. */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap');
+
+@layer payload {
+  :root {
+    /* paper → cream → sand → taupe → ink */
+    --color-base-0: rgb(251, 248, 243);
+    --color-base-50: rgb(246, 241, 233);
+    --color-base-100: rgb(243, 236, 225);
+    --color-base-150: rgb(230, 217, 198);
+    --color-base-200: rgb(216, 204, 186);
+    --color-base-250: rgb(202, 190, 173);
+    --color-base-300: rgb(188, 177, 161);
+    --color-base-350: rgb(173, 163, 149);
+    --color-base-400: rgb(159, 150, 136);
+    --color-base-450: rgb(145, 136, 124);
+    --color-base-500: rgb(131, 123, 112);
+    --color-base-550: rgb(117, 109, 100);
+    --color-base-600: rgb(107, 97, 88);
+    --color-base-650: rgb(88, 82, 75);
+    --color-base-700: rgb(74, 69, 63);
+    --color-base-750: rgb(60, 55, 50);
+    --color-base-800: rgb(46, 42, 38);
+    --color-base-850: rgb(40, 36, 32);
+    --color-base-900: rgb(33, 30, 27);
+    --color-base-950: rgb(26, 24, 22);
+    --color-base-1000: rgb(20, 18, 16);
+
+    /* sage for success / published / primary accents */
+    --color-success-50: rgb(241, 243, 238);
+    --color-success-100: rgb(225, 228, 221);
+    --color-success-150: rgb(209, 214, 203);
+    --color-success-200: rgb(192, 199, 186);
+    --color-success-250: rgb(176, 184, 169);
+    --color-success-300: rgb(160, 170, 151);
+    --color-success-350: rgb(144, 155, 134);
+    --color-success-400: rgb(127, 140, 117);
+    --color-success-450: rgb(111, 126, 99);
+    --color-success-500: rgb(95, 111, 82);
+    --color-success-550: rgb(87, 102, 75);
+    --color-success-600: rgb(80, 93, 69);
+    --color-success-650: rgb(72, 85, 62);
+    --color-success-700: rgb(64, 76, 55);
+    --color-success-750: rgb(57, 67, 49);
+    --color-success-800: rgb(49, 58, 42);
+    --color-success-850: rgb(41, 50, 35);
+    --color-success-900: rgb(34, 41, 29);
+    --color-success-950: rgb(26, 32, 22);
+
+    --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+
+    --style-radius-s: 4px;
+    --style-radius-m: 8px;
+    --style-radius-l: 12px;
+
+    --accessibility-outline: 2px solid rgb(95, 111, 82);
+  }
+
+  ::selection { background: rgb(230, 217, 198); color: rgb(46, 42, 38); }
+  html[data-theme='dark'] ::selection { background: rgb(88, 82, 75); color: rgb(251, 248, 243); }
+
+  /* Editorial serif for page and section titles, like the site */
+  h1, h2, h3,
+  .doc-header__title,
+  .render-title,
+  .list-header h1,
+  .dashboard__label,
+  .collapsible__title,
+  .login__brand + *,
+  .step-nav__home + * {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+
+  /* Pill buttons, as on the site */
+  .btn { border-radius: 999px; }
+  .btn--style-primary { background-color: rgb(95, 111, 82); color: rgb(251, 248, 243); }
+  .btn--style-primary:hover:not(:disabled),
+  .btn--style-primary:focus-visible { background-color: var(--theme-elevation-800); color: var(--theme-elevation-0); }
+
+  /* Branding */
+  .nv-admin-logo { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--theme-elevation-800); }
+  .nv-admin-logo .logo { width: 220px; height: auto; }
+  .nv-admin-logo__sub { font: 500 11px/1.4 var(--font-body); letter-spacing: 0.18em; text-transform: uppercase; color: var(--theme-elevation-600); }
+  .nv-admin-icon { display: block; width: 22px; height: 22px; border-radius: 6px; }
+}
