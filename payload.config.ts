@@ -15,6 +15,7 @@ import { Products } from './cms/collections/Products';
 import { Messages, Subscribers } from './cms/collections/Inbox';
 import { Home } from './cms/globals/Home';
 import { SEO } from './cms/globals/SEO';
+import { mcpPlugin } from '@payloadcms/plugin-mcp';
 import { seoPlugin } from '@payloadcms/plugin-seo';
 import { seoGenerators } from './cms/seo';
 
@@ -44,6 +45,25 @@ export default buildConfig({
       enabled: !!process.env.BLOB_READ_WRITE_TOKEN,
       collections: { media: { disablePayloadAccessControl: true } },
       token: process.env.BLOB_READ_WRITE_TOKEN,
+    }),
+    // Lets AI assistants (e.g. Claude) edit content over MCP at /api/mcp. Each API key (admin → MCP → API Keys)
+    // picks which of these capabilities it may use. Media is read/update only: the plugin can't upload files.
+    mcpPlugin({
+      userCollection: 'users',
+      collections: {
+        posts: { enabled: true, description: 'Chronicles: blog posts/articles' },
+        categories: { enabled: true, description: 'Categories that group Chronicles posts' },
+        guides: { enabled: true, description: 'Long-form guides' },
+        products: { enabled: true, description: 'Shop products with affiliate links' },
+        'shop-collections': { enabled: true, description: 'Curated groups of shop products' },
+        media: { enabled: { find: true, update: true }, description: 'Uploaded images (find existing ones to reference, edit alt text)' },
+        subscribers: { enabled: { find: true }, description: 'Newsletter subscribers' },
+        messages: { enabled: { find: true }, description: 'Messages sent through the contact form' },
+      },
+      globals: {
+        home: { enabled: true, description: 'Homepage content' },
+        seo: { enabled: true, description: 'SEO settings for fixed pages' },
+      },
     }),
   ],
 });
